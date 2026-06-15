@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Auto Broadcast System</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+        }
+
+        #messages {
+            margin-top: 20px;
+        }
+
+        .msg {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        input {
+            padding: 10px;
+            width: 300px;
+        }
+
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>📡 Auto Broadcast System</h2>
+
+<input type="text" id="msg" placeholder="Enter message">
+<button onclick="sendMessage()">Send</button>
+
+<hr>
+
+<div id="messages"></div>
+
+<script>
+
+    // SINGLE websocket connection
+    let ws = new WebSocket("ws://127.0.0.1:8000/ws");
+
+
+    // Receive messages
+    ws.onmessage = function(event) {
+
+        let div = document.createElement("div");
+
+        div.className = "msg";
+
+        div.innerText = event.data;
+
+        document.getElementById("messages")
+            .appendChild(div);
+    };
+
+
+    // Send message
+    async function sendMessage() {
+
+        let msg = document.getElementById("msg").value;
+
+        if (!msg.trim()) return;
+
+
+        // WebSocket broadcast
+        ws.send(msg);
+
+
+        // Backend API call
+        let formData = new FormData();
+
+        formData.append("text", msg);
+
+
+        await fetch("/send", {
+            method: "POST",
+            body: formData
+        });
+
+
+        // Clear input
+        document.getElementById("msg").value = "";
+    }
+
+</script>
+
+</body>
+</html>
