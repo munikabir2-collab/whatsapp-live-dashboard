@@ -3,7 +3,8 @@ from fastapi import Request, Depends, Form
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.websockets import WebSocketDisconnect
-
+from moviepy.video.VideoClip import TextClip
+from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
 from sqlalchemy.orm import Session
 
 from moviepy.editor import TextClip, CompositeVideoClip
